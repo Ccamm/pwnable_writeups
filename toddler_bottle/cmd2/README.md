@@ -34,7 +34,7 @@ int main(int argc, char* argv[], char** envp){
 }
 ```
 
-The question now is how can we run the *cat* utility without using any '/' characters, or find an alternative way to view the flag. Well the *system( argv[1] )* call will be the point that we would need to exploit, and since it is a wrapper for other POSIX exec functions we should have a look at how it works by running *man system*. This shows us that the *system(char * command)* call is a wrapper for *execl("/bin/sh", "sh", "-c", command, (char *) 0)*, which tells us that we are using the dash command line interpreter (AKA shell). Lets look into what already comes builtin with the shell that we have access too by reading the *man sh* page. Of particular interest to us is the builtin in *command* command (sounds a bit confusing), which has the -p option for using a PATH variable that "guarantees to find all the standard utilities".
+The question now is how can we run the *cat* utility without using any '/' characters, or find an alternative way to view the flag. Well the *system( argv[1] )* call will be the point that we would need to exploit, and since it is a wrapper for other POSIX exec functions we should have a look at how it works by running *man system*. This shows us that the system(char * command) call is a wrapper for execl("/bin/sh", "sh", "-c", command, (char \*) 0), which tells us that we are using the dash command line interpreter (AKA shell). Lets look into what already comes builtin with the shell that we have access too by reading the *man sh* page. Of particular interest to us is the builtin in *command* command (sounds a bit confusing), which has the -p option for using a PATH variable that "guarantees to find all the standard utilities".
 
 <pre>
 command [-p] [-v] [-V] command [arg ...]
@@ -51,7 +51,7 @@ command [-p] [-v] [-V] command [arg ...]
               pathname of utilities, the name for builtins or the expansion of aliases.
 </pre>
 
-Therefore, we can use *command -p cat f** to bypass the changing of the PATH environment variable since *cat* is a standard utility.
+Therefore, we can use command -p cat f* to bypass the changing of the PATH environment variable since *cat* is a standard utility.
 
 Once again, we can write a neat petite script to pwn this challenge.
 

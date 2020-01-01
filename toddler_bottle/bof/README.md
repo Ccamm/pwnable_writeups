@@ -62,7 +62,7 @@ gdb-peda$ b * func+40
 
 Now we can just run the program inside *gdb* and give it an input of 'AAAAAAAA' until the breakpoint to help identify where the buffer is located on the stack. The character 'A' was randomly chosen, since it has an ascii value of 41 which can help us identify where the buffer is.
 
-```
+<pre>
 gdb-peda$ x/50wx $esp
 0xffffd1c0:	0xffffd1dc	0xffffd2c4	0xf7fb2000	0xf7fb09e0
 0xffffd1d0:	0x00000000	0xf7fb2000	0xf7ffc840	<b>0x41414141</b>
@@ -77,7 +77,7 @@ gdb-peda$ x/50wx $esp
 0xffffd260:	0x00000000	0x0122c2f7	0x41a9e4e7	0x00000000
 0xffffd270:	0x00000000	0x00000000	0x00000001	0x56555530
 0xffffd280:	0x00000000	0xf7fe9450
-```
+</pre>
 
 The buffer starts at the top *0x41414141* entry in the stack, which is located at 4*13=52 bytes above the *0xdeadbeef* parameter. Therefore our input needs to have 52 bytes before we overflow the parameter. However, since our target system has little-endian ordering we will have to reverse our overflowing value.
 
