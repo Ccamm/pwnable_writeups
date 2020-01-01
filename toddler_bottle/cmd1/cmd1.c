@@ -6,14 +6,11 @@ int filter(char* cmd){
 	r += strstr(cmd, "flag")!=0;
 	r += strstr(cmd, "sh")!=0;
 	r += strstr(cmd, "tmp")!=0;
-	printf("%d\n", r);
 	return r;
 }
 int main(int argc, char* argv[], char** envp){
 	putenv("PATH=/thankyouverymuch");
 	if(filter(argv[1])) return 0;
-	printf("Yeet\n");
 	system( argv[1] );
 	return 0;
 }
-

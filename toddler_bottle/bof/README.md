@@ -3,7 +3,7 @@
 
 This challenge requires us to perform a simple Buffer Overflow attack for overwriting function parameters stored inside of memory.
 
-The C source code for challenge program is shown below, where the vulnerability is the *gets(overflowme)* call since *char * gets( char * )* has no array boundary checks and just reads *stdin* until the newline character.
+The C source code for the challenge is shown below, where the vulnerability can be immediately be identified at the *gets(overflowme)* call since *char * gets( char * )* has no array boundary checks and just reads *stdin* until the newline character.
 
 *bof.c*
 ```c
