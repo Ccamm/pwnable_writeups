@@ -1,5 +1,5 @@
-#Pwnable.kr: Toddler's Bottle
-##cmd1
+# Pwnable.kr: Toddler's Bottle
+## cmd1
 
 For this challenge we just need to bypass a simple filter in order to print out the flag. The source code is shown below and shows that the filter only just checks for the strings *"flag"*, *"sh"*, and *"tmp"* within our input argument then if the filter does not catch anything passes our argument to *system( argv[1] )*.
 

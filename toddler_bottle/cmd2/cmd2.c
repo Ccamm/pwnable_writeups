@@ -23,8 +23,6 @@ int main(int argc, char* argv[], char** envp){
 	delete_env();
 	putenv("PATH=/no_command_execution_until_you_become_a_hacker");
 	if(filter(argv[1])) return 0;
-	printf("%s\n", argv[1]);
 	system( argv[1] );
 	return 0;
 }
-
