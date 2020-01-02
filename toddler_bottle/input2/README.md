@@ -162,9 +162,23 @@ extern char **environ;
 execve("/home/input2/input", arg_list, environ);
 ```
 
-### Stage 4: Changing HOME Path To Read File
+### Stage 4: Reading File Bypass
 
-The next stage requires us bypass the check of opening a file in the same directory as the program we need to exploit that we need to write. The only issue is that we do not have write permission for the directory where the executable is saved and can only write inside of the */tmp* directory. So we have to change the working directory to one that we have write access to and then write the specified file. This requires a similar technique to Stage 3, but instead change the *PWD* environment variable.
+The next stage requires us to bypass the check of opening a file in the same directory as the program we need to exploit that we need to write. We cannot write to the directory, but we have write privileges inside the /tmp/* directories, which is where we save our our file to read. This is fairly simple to do, and if you are unsure how to do this read up on file IO for C.
+
+```c
+FILE *fp = fopen("\x0a", "w");
+if ( fp == NULL ) {
+  printf("Something goofed with saving the file\n");
+  return 1;
+}
+if ( fwrite("\x00\x00\x00\x00", 4, 1, fp) == 0 ) {
+  printf("Writing didn't work :/\n");
+  fclose(fp);
+  return 1;
+}
+fclose(fp);
+```
 
 ### Stage 5: Bypassing Network Check
 
@@ -240,12 +254,7 @@ void socket_communication( char **arg_list ) {
 }
 
 int main(int argc, char **argv) {
-	if (argc != 2) {
-    printf("You need to specify where the payload is compiled\n");
-    return 0;
-  }
 	setenv("\xde\xad\xbe\xef", "\xca\xfe\xba\xbe", 1);
-	setenv("PWD", argv[1], 1);
 	extern char **environ;
 
 	char *arg_list[101] = {};

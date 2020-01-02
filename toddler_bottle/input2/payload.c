@@ -29,12 +29,7 @@ void socket_communication( char **arg_list ) {
 }
 
 int main(int argc, char **argv) {
-	if (argc != 2) {
-    printf("You need to specify where the payload is compiled\n");
-    return 0;
-  }
 	setenv("\xde\xad\xbe\xef", "\xca\xfe\xba\xbe", 1);
-	setenv("PWD", argv[1], 1);
 	extern char **environ;
 
 	char *arg_list[101] = {};
