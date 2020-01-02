@@ -1,6 +1,9 @@
 from pwn import *
 import re
 
+# Uncomment the line below if pwn script is loaded onto the pwnable server
+# for faster response times. 
+# c = remote("0", 9007)
 c = remote("pwnable.kr", 9007)
 
 #Parse the starting parameters of round
@@ -19,7 +22,7 @@ def binary_search(mn, mid, mx, chances):
     c.sendline(query)
     chances -= 1
 
-    if int(c.recvline()[:-1]) % 2 == 0: 
+    if int(c.recvline()[:-1]) % 2 == 0:
         return binary_search(mid, int((mx-mid)/2)+mid, mx, chances)
     else: return binary_search(mn, int((mid-mn)/2)+mn, mid, chances)
 
@@ -32,11 +35,11 @@ for game_num in range(0, 100):
     print("Game Number: " + str(game_num))
     n,chances = parse_start(c.recvline())
     result, chances = binary_search(0, int((n-1)/2), n-1, chances)
-    
+
     for i in range(0, chances):
         c.sendline("0")
         c.recvline()
-    
+
     c.sendline(result)
     c.recvline()
 
