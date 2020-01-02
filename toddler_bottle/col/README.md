@@ -39,7 +39,7 @@ int main(int argc, char* argv[]){
 
 Now obviously, there are an infinite number of hash collisions for *0x21dd09ec*, but we are constrained by the size of integers being 4 bytes long and it is signed so if we try to parse a integer with the first bit set it would subtract instead. Therefore we need to make the integers we input in as close to each other so the first bit is not set, they are 4 bytes long each and we don't accidentally send any null bytes.
 
-We can do this by dividing the hash by 5 (since we need 5 integers) and for the remainder of hash/5 we can put into the last number we send it. We can now write script.
+We can do this by dividing the hash by 5 (since we need 5 integers) and for the remainder of hash/5 we can put into the last number we send it. We can now write our pwn script.
 
 ```python
 from pwn import *
@@ -59,3 +59,18 @@ s = ssh(host='pwnable.kr', port=2222, user='col', password='guest')
 p = s.process(['./col', payload])
 p.interactive()
 ```
+
+Bingo! We got the flag!
+
+<pre>
+[+] Connecting to pwnable.kr on port 2222: Done
+[*] col@pwnable.kr:
+    Distro    Ubuntu 16.04
+    OS:       linux
+    Arch:     amd64
+    Version:  4.4.179
+    ASLR:     Enabled
+[+] Starting remote process './col' on pwnable.kr: pid 244695
+[*] Switching to interactive mode
+daddy! I just managed to create a hash collision :)
+</pre>
